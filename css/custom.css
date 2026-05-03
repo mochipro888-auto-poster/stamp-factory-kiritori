@@ -64,8 +64,9 @@
   -webkit-touch-callout: none;
 }
 
-/* 消しゴム時はデフォルトカーソル非表示（円カーソルが主役） */
-#editorCanvas[data-tool="eraser"] {
+/* 消しゴム / 白復元時はデフォルトカーソル非表示（円カーソルが主役） */
+#editorCanvas[data-tool="eraser"],
+#editorCanvas[data-tool="restore"] {
   cursor: none;
 }
 
