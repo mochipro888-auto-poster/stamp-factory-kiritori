@@ -58,11 +58,35 @@
 /* エディターカンバスのカーソル制御 */
 #editorCanvas {
   cursor: crosshair;
+  touch-action: none; /* スマホ：スクロール・ピンチを無効化（描画専用） */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 /* 消しゴム時はデフォルトカーソル非表示（円カーソルが主役） */
 #editorCanvas[data-tool="eraser"] {
   cursor: none;
+}
+
+/* メインキャンバス：選択操作をスマホでも快適に */
+#overlayCanvas, #mainCanvas {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* スマホ：キャンバスコンテナを画面に収める */
+@media (max-width: 768px) {
+  #canvasContainer {
+    max-width: 100%;
+    overflow: auto;
+  }
+  #editorModal .relative > div {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
 }
 
 /* スクロールバー（Webkit） */
