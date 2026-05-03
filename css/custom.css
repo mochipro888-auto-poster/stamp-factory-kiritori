@@ -77,6 +77,35 @@
   -webkit-touch-callout: none;
 }
 
+/* ズーム時のスムーズな表示（内部ピクセルは変えず表示サイズのみ変える） */
+#mainCanvas, #overlayCanvas {
+  transition: width 0.15s ease-out, height 0.15s ease-out;
+}
+
+/* キャンバスコンテナ：拡大時のスクロール対応 */
+#canvasContainer {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ズームボタンのアクティブ状態 */
+#zoomInBtn:active,
+#zoomOutBtn:active,
+#zoomFitBtn:active,
+#zoomResetBtn:active,
+#editorZoomInBtn:active,
+#editorZoomOutBtn:active,
+#editorZoomFitBtn:active,
+#editorZoomResetBtn:active {
+  transform: scale(0.95);
+  background-color: #e5e7eb;
+}
+
+/* エディタキャンバスのスムーズズーム */
+#editorCanvas {
+  transition: width 0.15s ease-out, height 0.15s ease-out;
+}
+
 /* スマホ：キャンバスコンテナを画面に収める */
 @media (max-width: 768px) {
   #canvasContainer {
