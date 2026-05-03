@@ -1,0 +1,23 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+
+# Internal docs (deploy しない)
+_docs/
+
+# テスト出力
+test-output/
+*.zip
+
+# 一時ファイル
+tmp/
+*.tmp

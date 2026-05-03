@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏭 スタンプ工場『きりとり』- ChatGPT画像をLINEスタンプに</title>
+  <meta name="description" content="ChatGPTで作ったスタンプ画像を切り抜き→透過→ZIPダウンロード。誰でも簡単にLINEスタンプ商品化。">
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'sukipura-green': '#81C784',
+            'sukipura-navy': '#1E3A5F',
+            'sukipura-pink': '#F8BBD0',
+            'torinoko-yellow': '#FFD700',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- JSZip CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <link rel="stylesheet" href="css/custom.css">
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-green-50 to-yellow-50 min-h-screen">
+
+  <!-- ヘッダー -->
+  <header class="bg-white shadow-sm border-b-4 border-sukipura-green">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between flex-wrap">
+      <div class="flex items-center gap-3">
+        <div class="text-3xl">🏭</div>
+        <div>
+          <h1 class="text-xl md:text-2xl font-bold text-sukipura-navy">
+            スタンプ工場『きりとり』
+          </h1>
+          <p class="text-xs md:text-sm text-gray-500">
+            画像を選んで → 範囲指定 → LINEスタンプ化
+          </p>
+        </div>
+      </div>
+      <div class="text-xs text-gray-500 mt-2 md:mt-0">
+        by <a href="https://twitter.com/leama_55555" target="_blank" rel="noopener" class="text-sukipura-green hover:underline">@leama_55555</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- メインコンテンツ -->
+  <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+
+    <!-- ステップ1: アップロード -->
+    <section class="bg-white rounded-2xl shadow-md p-6">
+      <h2 class="text-lg font-bold text-sukipura-navy mb-3 flex items-center gap-2">
+        <span class="bg-sukipura-green text-white rounded-full w-8 h-8 flex items-center justify-center text-sm">1</span>
+        画像をアップロード
+      </h2>
+      <p class="text-sm text-gray-600 mb-3">
+        ChatGPTで作ったスタンプ画像をアップロードしてください。
+      </p>
+
+      <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+      <div id="dropZone" class="border-2 border-dashed border-sukipura-green/50 rounded-xl p-8 text-center cursor-pointer hover:bg-green-50 transition">
+        <div class="text-5xl mb-2">📁</div>
+        <p class="text-sukipura-navy font-bold">クリック or ドラッグ&ドロップで画像を選択</p>
+        <p class="text-xs text-gray-500 mt-1">対応形式: PNG / JPEG / WebP（複数枚OK）</p>
+      </div>
+
+      <!-- アップロード情報＋プレビュー -->
+      <div id="uploadInfo" class="mt-4 hidden">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-sm text-sukipura-navy">
+            📷 <span id="fileCount">0</span>枚アップロード済み
+            <span id="totalSize" class="text-gray-500 text-xs ml-2"></span>
+          </p>
+          <button id="clearAllBtn" class="text-xs text-red-500 hover:text-red-700 hover:underline">
+            🗑️ 全削除
+          </button>
+        </div>
+        <div id="uploadPreview" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+      </div>
+    </section>
+
+    <!-- ステップ2: 範囲指定キャンバス -->
+    <section id="canvasSection" class="bg-white rounded-2xl shadow-md p-6 hidden">
+      <h2 class="text-lg font-bold text-sukipura-navy mb-3 flex items-center gap-2">
+        <span class="bg-sukipura-green text-white rounded-full w-8 h-8 flex items-center justify-center text-sm">2</span>
+        範囲を選択
+      </h2>
+
+      <!-- 編集対象画像セレクター（複数アップロード時） -->
+      <div id="imageSelector" class="mb-3 flex items-center gap-2 flex-wrap hidden">
+        <span class="text-sm text-gray-600">編集中:</span>
+        <div id="imageSelectorButtons" class="flex gap-1 flex-wrap"></div>
+      </div>
+
+      <!-- ツールバー -->
+      <div class="flex flex-wrap gap-2 mb-3 items-center">
+        <span class="text-sm text-gray-600">グリッド初期配置:</span>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="2x2">2×2 (4)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="3x3">3×3 (9)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="4x4">4×4 (16)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="4x2">4×2 (8)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="2x4">2×4 (8)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="6x4">6×4 (24)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="4x6">4×6 (24)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="8x4">8×4 (32)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="4x8">4×8 (32)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="8x5">8×5 (40)</button>
+        <button class="preset-btn px-3 py-1 rounded-lg border-2 border-gray-300 hover:border-sukipura-green text-sm bg-white" data-grid="5x8">5×8 (40)</button>
+        <span class="border-l border-gray-300 h-6 mx-1"></span>
+        <button id="autoDetectBtn" class="px-3 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border-2 border-purple-300 text-sm font-bold" title="画像から自動でオブジェクトを検出">
+          🤖 AI自動検出
+        </button>
+        <span class="border-l border-gray-300 h-6 mx-1"></span>
+        <button id="clearSelectionsBtn" class="px-3 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 text-sm">
+          🗑️ すべてクリア
+        </button>
+        <span class="ml-auto text-sm text-sukipura-navy font-bold">
+          選択中: <span id="selectionCount">0</span>個
+        </span>
+      </div>
+
+      <!-- 操作ガイド -->
+      <details class="mb-3 text-sm">
+        <summary class="cursor-pointer font-bold text-sukipura-navy">📖 操作方法</summary>
+        <div class="mt-2 p-3 bg-gray-50 rounded-lg text-gray-600 text-xs space-y-1">
+          <p>🖱️ <strong>新規範囲:</strong> 何もない場所をクリックしてドラッグ</p>
+          <p>✋ <strong>移動:</strong> 範囲をクリックしてドラッグ</p>
+          <p>📐 <strong>サイズ変更:</strong> 範囲の角・辺をドラッグ</p>
+          <p>❌ <strong>削除:</strong> 範囲を右クリック or DELキー</p>
+          <p>📊 <strong>初期配置:</strong> 「2×2」「4×4」等のボタンで一括配置</p>
+          <p>🤖 <strong>AI自動検出:</strong> 1クリックで全オブジェクトを自動配置</p>
+          <p class="text-blue-600 mt-2">💡 切り抜き後、各画像をクリックすると<strong>個別エディター</strong>が開き、消しゴム・自動削除で微調整できます</p>
+        </div>
+      </details>
+
+      <!-- キャンバスエリア -->
+      <div id="canvasContainer" class="border-2 border-gray-200 rounded-lg overflow-auto bg-gray-100" style="max-height: 600px;">
+        <div id="canvasWrapper" class="relative inline-block">
+          <canvas id="mainCanvas" class="block"></canvas>
+          <canvas id="overlayCanvas" class="absolute top-0 left-0 cursor-crosshair"></canvas>
+        </div>
+      </div>
+
+      <!-- オプション -->
+      <div class="mt-5 pt-5 border-t border-gray-200">
+        <h3 class="font-bold text-sukipura-navy mb-2">🎨 オプション</h3>
+        <div class="space-y-3">
+
+          <!-- サイズプリセット -->
+          <div>
+            <label class="flex items-center gap-2 cursor-pointer mb-2">
+              <input type="checkbox" id="optResize" checked class="w-4 h-4">
+              <span class="text-sm font-bold">サイズ変更（リサイズ）</span>
+            </label>
+            <div id="sizePresetWrapper" class="ml-6 space-y-2">
+              <select id="sizePreset" class="border-2 border-gray-300 rounded-lg px-3 py-1 text-sm bg-white w-full md:w-auto">
+                <optgroup label="📱 LINEスタンプ">
+                  <option value="line-sticker" selected>通常スタンプ (370×320)</option>
+                  <option value="line-main">メイン画像 (240×240)</option>
+                  <option value="line-tab">タブ画像 (96×74)</option>
+                </optgroup>
+                <optgroup label="🐦 X (Twitter)">
+                  <option value="x-header">ヘッダー (1500×500)</option>
+                  <option value="x-profile">プロフィール (400×400)</option>
+                  <option value="x-post-landscape">投稿 横長 (1200×675)</option>
+                  <option value="x-post-square">投稿 正方形 (1080×1080)</option>
+                </optgroup>
+                <optgroup label="📷 Instagram">
+                  <option value="ig-profile">プロフィール (320×320)</option>
+                  <option value="ig-square">投稿 正方形 (1080×1080)</option>
+                  <option value="ig-portrait">投稿 縦長 (1080×1350)</option>
+                  <option value="ig-story">ストーリー/リール (1080×1920)</option>
+                </optgroup>
+                <optgroup label="🧵 Threads">
+                  <option value="threads-post">投稿 正方形 (1080×1080)</option>
+                  <option value="threads-portrait">投稿 縦長 (1080×1350)</option>
+                </optgroup>
+                <optgroup label="📝 note">
+                  <option value="note-header">記事ヘッダー (1280×320)</option>
+                  <option value="note-thumbnail">記事サムネ (1280×670)</option>
+                </optgroup>
+                <optgroup label="📦 商品ページ（Brain・Tips等）">
+                  <option value="product-thumbnail">商品サムネ (1200×630)</option>
+                  <option value="product-banner">商品バナー (1200×400)</option>
+                </optgroup>
+                <optgroup label="📺 YouTube">
+                  <option value="yt-thumbnail">サムネ (1280×720)</option>
+                  <option value="yt-banner">チャンネルバナー (2048×1152)</option>
+                </optgroup>
+                <optgroup label="🎯 汎用">
+                  <option value="icon-small">正方形アイコン 小 (512×512)</option>
+                  <option value="icon-large">正方形アイコン 大 (1024×1024)</option>
+                  <option value="banner-wide">横長バナー (1500×500)</option>
+                  <option value="hd-landscape">フルHD 横 (1920×1080)</option>
+                  <option value="a4-portrait">A4縦 (1240×1754)</option>
+                  <option value="a4-landscape">A4横 (1754×1240)</option>
+                </optgroup>
+                <optgroup label="✏️ カスタム">
+                  <option value="custom">カスタムサイズ（手動入力）</option>
+                </optgroup>
+              </select>
+
+              <!-- カスタムサイズ入力欄 -->
+              <div id="customSizeInputs" class="hidden flex flex-wrap gap-2 items-center">
+                <input type="number" id="customWidth" min="32" max="4096" value="500" class="w-24 px-2 py-1 text-sm border-2 border-gray-300 rounded-lg">
+                <span class="text-sm text-gray-500">×</span>
+                <input type="number" id="customHeight" min="32" max="4096" value="500" class="w-24 px-2 py-1 text-sm border-2 border-gray-300 rounded-lg">
+                <span class="text-sm text-gray-500">px</span>
+              </div>
+
+              <!-- 変換モード -->
+              <div class="flex flex-wrap gap-3 mt-2 text-xs">
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" name="resizeMode" value="contain" checked>
+                  <span>余白あり（全体表示・推奨）</span>
+                </label>
+                <label class="flex items-center gap-1 cursor-pointer">
+                  <input type="radio" name="resizeMode" value="cover">
+                  <span>余白なし（はみ出し部分カット）</span>
+                </label>
+              </div>
+
+              <!-- アスペクト比ロック -->
+              <div class="mt-2 p-2 bg-blue-50 rounded border border-blue-200">
+                <label class="flex items-center gap-2 cursor-pointer text-xs">
+                  <input type="checkbox" id="optAspectLock" checked class="w-4 h-4">
+                  <span class="font-bold text-sukipura-navy">📐 出力アスペクト比に合わせて選択範囲を作る</span>
+                </label>
+                <p class="text-[10px] text-gray-600 mt-1 ml-6">
+                  ON：選択範囲・グリッド初期配置が出力サイズの縦横比でロック<br>
+                  OFF：選択範囲を自由形状で作成（出力時に自動リサイズ）
+                </p>
+                <p id="currentAspectInfo" class="text-[10px] text-blue-700 mt-1 ml-6 font-bold"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- メイン・タブ画像 -->
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="optMainTabImages" class="w-4 h-4">
+            <span class="text-sm">📦 LINE申請用 メイン画像（240×240）＆タブ画像（96×74）も生成</span>
+          </label>
+
+          <!-- 背景透過 -->
+          <div>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" id="optBgRemove" class="w-4 h-4">
+              <span class="text-sm font-bold">🎨 背景透過 <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full ml-2">NEW</span></span>
+            </label>
+            <div id="bgRemoveOptions" class="ml-6 mt-1 hidden space-y-1">
+              <p class="text-xs text-gray-600">白に近い色を透明化（ChatGPT画像に最適）</p>
+              <div class="flex flex-wrap gap-3 text-xs">
+                <label class="text-gray-700">
+                  閾値（白判定）:
+                  <input type="range" id="bgThreshold" min="200" max="255" value="240" class="ml-1 w-32 align-middle">
+                  <span id="bgThresholdVal" class="text-blue-700 font-bold">240</span>
+                </label>
+                <label class="text-gray-700">
+                  境界滑らか度:
+                  <input type="range" id="bgSoftness" min="0" max="50" value="20" class="ml-1 w-24 align-middle">
+                  <span id="bgSoftnessVal" class="text-blue-700 font-bold">20</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button id="cropBtn" class="mt-5 w-full bg-sukipura-green hover:bg-green-600 text-white font-bold py-3 rounded-xl transition shadow-md disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+        ✂️ 切り抜きを実行
+      </button>
+    </section>
+
+    <!-- ステップ3: プレビュー -->
+    <section id="previewSection" class="bg-white rounded-2xl shadow-md p-6 hidden">
+      <h2 class="text-lg font-bold text-sukipura-navy mb-3 flex items-center gap-2">
+        <span class="bg-sukipura-green text-white rounded-full w-8 h-8 flex items-center justify-center text-sm">3</span>
+        切り抜き結果プレビュー
+      </h2>
+
+      <div id="previewContainer" class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4"></div>
+
+      <div class="flex flex-wrap gap-2">
+        <button id="downloadZipBtn" class="flex-1 min-w-[200px] bg-sukipura-navy hover:bg-blue-900 text-white font-bold py-3 rounded-xl transition shadow-md">
+          📥 ZIP一括ダウンロード
+        </button>
+        <button id="resetBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-6 py-3 rounded-xl transition">
+          🔄 リセット
+        </button>
+      </div>
+    </section>
+
+    <!-- 使い方ガイド -->
+    <section class="bg-gradient-to-r from-yellow-50 to-green-50 rounded-2xl shadow-md p-6 border-2 border-sukipura-green/30">
+      <h2 class="text-lg font-bold text-sukipura-navy mb-3">🐥 使い方ガイド</h2>
+      <ol class="space-y-2 text-sm text-gray-700">
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">①</span>ChatGPTでLINEスタンプ画像を作成（4×4の16枚推奨）</li>
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">②</span>このページにアップロード</li>
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">③</span>「4×4」or「🤖 AI自動検出」で初期配置 → 各枠をドラッグして微調整</li>
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">④</span>「✂️ 切り抜きを実行」でZIP生成</li>
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">⑤</span>各画像をクリックして🛠️個別編集（消しゴム・自動削除）も可能</li>
+        <li class="flex gap-2"><span class="font-bold text-sukipura-green">⑥</span>LINEスタンプメーカーに提出！</li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- フッター -->
+  <footer class="text-center py-6 text-xs text-gray-500">
+    <p>🌿 すきぷらシリーズ | スタンプ工場『きりとり』</p>
+    <p class="mt-1">© 2026 りーま@AI薬剤師｜すきぷら</p>
+  </footer>
+
+  <!-- ローディング -->
+  <div id="loading" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-2xl p-8 text-center shadow-2xl">
+      <div class="text-5xl mb-3 animate-spin">🐥</div>
+      <p id="loadingText" class="text-sukipura-navy font-bold">処理中...</p>
+    </div>
+  </div>
+
+  <!-- 個別画像エディターモーダル -->
+  <div id="editorModal" class="fixed inset-0 bg-black/70 z-40 hidden flex items-center justify-center p-2 md:p-4">
+    <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[95vh] flex flex-col">
+
+      <!-- ヘッダー -->
+      <div class="flex items-center justify-between p-3 border-b">
+        <h3 class="font-bold text-sukipura-navy text-sm md:text-base">
+          🛠️ 画像編集 <span id="editorTitle" class="text-gray-500 text-xs ml-2"></span>
+        </h3>
+        <button id="editorCloseBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none w-8 h-8 flex items-center justify-center">×</button>
+      </div>
+
+      <!-- ツールバー -->
+      <div class="flex flex-wrap gap-2 p-3 border-b items-center bg-gray-50 text-sm">
+        <span class="text-xs text-gray-600">ツール:</span>
+        <button class="editor-tool-btn px-3 py-1 rounded-lg border-2 border-sukipura-green bg-sukipura-green text-white font-bold" data-tool="eraser">
+          🧹 消しゴム
+        </button>
+        <button class="editor-tool-btn px-3 py-1 rounded-lg border-2 border-gray-300 bg-white hover:border-sukipura-green" data-tool="rect-delete">
+          ⬛ 範囲削除
+        </button>
+        <button id="editorAutoCleanBtn" class="px-3 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border-2 border-purple-300">
+          🤖 自動削除
+        </button>
+        <span class="border-l h-6 mx-1"></span>
+        <button id="editorUndoBtn" class="px-3 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600">
+          ↩️ 戻る
+        </button>
+        <button id="editorResetBtn" class="px-3 py-1 rounded-lg bg-red-50 hover:bg-red-100 text-red-600">
+          🔄 元に戻す
+        </button>
+      </div>
+
+      <!-- ブラシ設定（消しゴム時のみ） -->
+      <div id="editorBrushControls" class="flex flex-wrap gap-3 p-3 border-b items-center text-xs bg-blue-50">
+        <label class="flex items-center gap-2">
+          <span class="text-gray-700">ブラシサイズ:</span>
+          <input type="range" id="editorBrushSize" min="5" max="200" value="30" class="w-32">
+          <span id="editorBrushSizeVal" class="font-bold text-blue-700 min-w-[40px]">30px</span>
+        </label>
+        <label class="flex items-center gap-2">
+          <span class="text-gray-700">硬さ:</span>
+          <input type="range" id="editorBrushHardness" min="0" max="100" value="80" class="w-24">
+          <span id="editorBrushHardnessVal" class="font-bold text-blue-700 min-w-[35px]">80%</span>
+        </label>
+      </div>
+
+      <!-- 自動削除設定（折りたたみ） -->
+      <div id="editorAutoCleanControls" class="hidden p-3 border-b bg-purple-50 text-xs">
+        <p class="text-gray-700 mb-2">📌 中心から離れた小さなオブジェクトを自動削除します</p>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-gray-700">削除する小物の最大サイズ:</span>
+          <input type="range" id="autoCleanSize" min="5" max="200" value="40" class="w-32">
+          <span id="autoCleanSizeVal" class="font-bold text-purple-700 min-w-[40px]">40px</span>
+          <span class="text-gray-500">→ 実際の大きさ:</span>
+          <div id="autoCleanSizeBox" class="bg-purple-300/40 border-2 border-purple-500 rounded inline-block" style="width: 40px; height: 40px;"></div>
+        </div>
+        <button id="editorAutoCleanRunBtn" class="mt-3 px-4 py-1 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm">
+          実行
+        </button>
+      </div>
+
+      <!-- キャンバスエリア -->
+      <div class="flex-1 overflow-auto bg-gray-200 p-4 flex items-center justify-center min-h-[300px]">
+        <div class="bg-checkerboard rounded-lg shadow-lg inline-block">
+          <canvas id="editorCanvas" class="block max-w-full"></canvas>
+        </div>
+      </div>
+
+      <!-- フッター -->
+      <div class="p-3 border-t flex gap-2 justify-end items-center bg-gray-50">
+        <span id="editorStatus" class="text-xs text-gray-500 mr-auto"></span>
+        <button id="editorCancelBtn" class="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-sm">
+          キャンセル
+        </button>
+        <button id="editorApplyBtn" class="px-6 py-2 rounded-lg bg-sukipura-green hover:bg-green-600 text-white font-bold text-sm shadow-md">
+          💾 適用
+        </button>
+      </div>
+    </div>
+
+    <!-- ブラシサイズカーソル（消しゴム時のみ表示） -->
+    <div id="editorBrushCursor" class="hidden fixed pointer-events-none rounded-full border-2 border-blue-600 z-50" style="background: rgba(0, 100, 200, 0.1); box-shadow: 0 0 0 1px rgba(255,255,255,0.7); transform: translate(-50%, -50%);"></div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

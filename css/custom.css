@@ -1,0 +1,85 @@
+/**
+ * スタンプ工場『きりとり』 - カスタムスタイル
+ */
+
+/* チェッカーボード背景（透過画像確認用） */
+.bg-checkerboard {
+  background-image:
+    linear-gradient(45deg, #e5e7eb 25%, transparent 25%),
+    linear-gradient(-45deg, #e5e7eb 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #e5e7eb 75%),
+    linear-gradient(-45deg, transparent 75%, #e5e7eb 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color: #f9fafb;
+}
+
+/* スピンアニメーション（ひよこくるくる） */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 2s linear infinite;
+}
+
+/* ホバーエフェクト */
+.grid-btn {
+  transition: all 0.2s ease;
+}
+
+.grid-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ドロップゾーンのアニメーション */
+#dropZone {
+  transition: all 0.3s ease;
+}
+
+#dropZone:hover {
+  transform: translateY(-2px);
+}
+
+/* スマホ向け調整 */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.1rem !important;
+  }
+}
+
+/* プレビューカードのアスペクト比 */
+.aspect-\[370\/320\] {
+  aspect-ratio: 370 / 320;
+}
+
+/* エディターカンバスのカーソル制御 */
+#editorCanvas {
+  cursor: crosshair;
+}
+
+/* 消しゴム時はデフォルトカーソル非表示（円カーソルが主役） */
+#editorCanvas[data-tool="eraser"] {
+  cursor: none;
+}
+
+/* スクロールバー（Webkit） */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #81C784;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #66BB6A;
+}
