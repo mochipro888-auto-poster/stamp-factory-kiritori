@@ -193,3 +193,43 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #66BB6A;
 }
+
+/* ★ v0.11.2：プレビュー表示センタリング（解釈C）
+   ON時: 各カード内画像を厳密に中央＋わずかなパディングで「枠の中央にいる感」を強調
+   OFF時: object-contain既定の挙動（カード全面） */
+#previewContainer.preview-centered .preview-bg-target {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#previewContainer.preview-centered .preview-bg-target > img {
+  max-width: 88%;
+  max-height: 88%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  margin: auto;
+}
+
+/* ★ v0.12.0：操作方法アコーディオン（各ステップタイトル横） */
+.op-guide {
+  position: relative;
+}
+.op-guide summary {
+  list-style: none;
+}
+.op-guide summary::-webkit-details-marker {
+  display: none;
+}
+.op-guide-body {
+  /* 浮かせる */
+  min-width: 280px;
+}
+@media (max-width: 640px) {
+  .op-guide-body {
+    /* スマホでははみ出さないよう右端基準で広く */
+    right: -1rem;
+    max-width: calc(100vw - 2rem);
+  }
+}
