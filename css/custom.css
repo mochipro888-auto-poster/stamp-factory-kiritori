@@ -81,15 +81,6 @@
 }
 
 /* ホバーエフェクト */
-.grid-btn {
-  transition: all 0.2s ease;
-}
-
-.grid-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 /* ドロップゾーンのアニメーション */
 #dropZone {
   transition: all 0.3s ease;
@@ -235,40 +226,72 @@
 }
 
 /* ===========================================================
-   v0.13.0：アニメーション作成モーダル
+   v0.14.0：動くスタンプ（フレームアニメ式）モーダル
 =========================================================== */
-.anim-preset-btn,
-.anim-size-btn {
+/* フレームサムネ1コマ */
+.anim-frame-cell {
+  position: relative;
+  width: 84px;
   background: #FFFFFF;
   border: 2px solid #d1d5db;
   border-radius: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: #1E3A5F;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1.2;
-  min-height: 56px;
+  padding: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
+  gap: 4px;
 }
-.anim-preset-btn:hover,
-.anim-size-btn:hover {
+.anim-frame-num {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: #6366F1;
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 0.4rem;
+  z-index: 1;
+}
+.anim-frame-thumb {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background:
+    linear-gradient(45deg, #e5e7eb 25%, transparent 25%, transparent 75%, #e5e7eb 75%, #e5e7eb),
+    linear-gradient(45deg, #e5e7eb 25%, transparent 25%, transparent 75%, #e5e7eb 75%, #e5e7eb);
+  background-size: 12px 12px;
+  background-position: 0 0, 6px 6px;
+  border-radius: 0.35rem;
+}
+.anim-frame-ctrl {
+  display: flex;
+  gap: 3px;
+}
+.anim-frame-ctrl button {
+  border: 1px solid #d1d5db;
+  background: #F9FAFB;
+  border-radius: 0.35rem;
+  font-size: 12px;
+  line-height: 1;
+  padding: 3px 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+.anim-frame-ctrl button:hover:not(:disabled) {
+  background: #EDE9FE;
   border-color: #8B5CF6;
-  background: #F5F3FF;
 }
-.anim-preset-btn.active,
-.anim-size-btn.active {
-  background: linear-gradient(135deg, #8B5CF6, #6366F1) !important;
-  color: #FFFFFF !important;
-  border-color: #6366F1 !important;
-  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.4);
+.anim-frame-ctrl button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
+
+/* 自動チェック・警告表示 */
+.anim-warn-ok   { color: #15803d; }
+.anim-warn-bad  { color: #b91c1c; font-weight: 700; }
+.anim-warn-info { color: #6b7280; }
 
 /* ===========================================================
    v0.13.5：ワンクリック自動透過 CTAボタン（iScanner式UI改善）
