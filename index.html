@@ -1169,6 +1169,7 @@
             <div>
               <span class="text-xs font-bold text-gray-600 block mb-1">動かしたい画像（1枚）</span>
               <input type="file" id="animPresetFileInput" accept="image/png,image/jpeg" class="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-pink-500 file:text-white file:font-bold file:cursor-pointer hover:file:bg-pink-600">
+              <label class="flex items-center gap-1.5 text-[11px] text-gray-600 mt-1 cursor-pointer"><input type="checkbox" id="animPresetAutoBg" class="accent-pink-500"> 読込時に背景を自動透過（白/緑/青を自動判定）<span class="bg-pink-100 text-pink-600 px-1 rounded">v0.17</span></label>
               <p id="animPresetSrcInfo" class="text-[11px] text-gray-500 mt-1">未選択</p>
             </div>
             <div class="grid grid-cols-3 gap-2">
@@ -1211,13 +1212,14 @@
           <p class="font-bold text-sukipura-navy text-sm mb-2">① コマ画像を読み込む（複数可・こだわり派向け）</p>
           <p class="text-xs text-gray-600 mb-2">PNG / JPEG を複数選んで読み込むと、下に順番に並びます。透過済みPNGを推奨します。かんたんモードで生成したコマもここで並べ替え・削除できます。</p>
           <input type="file" id="animateFileInput" accept="image/png,image/jpeg" multiple class="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-500 file:text-white file:font-bold file:cursor-pointer hover:file:bg-purple-600">
+          <label class="flex items-center gap-1.5 text-[11px] text-gray-600 mt-1.5 cursor-pointer"><input type="checkbox" id="animAutoBgRemove" class="accent-purple-500"> 読込時に背景を自動透過（白/緑/青を自動判定）<span class="bg-purple-100 text-purple-600 px-1 rounded">v0.17</span></label>
           <p id="animateFrameCountInfo" class="text-xs text-gray-600 mt-2">読み込み済み：<strong>0</strong> コマ</p>
         </div>
 
         <!-- ② フレーム一覧（並べ替え・削除） -->
         <div>
           <div class="flex items-center justify-between mb-2">
-            <p class="font-bold text-sukipura-navy text-sm">② 順番を並べ替える（←→で入替・🗑で削除）</p>
+            <p class="font-bold text-sukipura-navy text-sm">② 順番を並べ替える（ドラッグ or ←→で入替・⧉で微変形コピー・🗑で削除・数値欄でコマ別ms）</p>
             <button id="animateClearFramesBtn" class="text-xs text-red-500 hover:text-red-700 underline">すべて削除</button>
           </div>
           <div id="animateFrameList" class="flex flex-wrap gap-2 min-h-[80px] p-2 bg-gray-50 rounded-lg border border-gray-200">

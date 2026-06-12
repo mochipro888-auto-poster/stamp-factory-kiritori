@@ -288,6 +288,22 @@
   cursor: not-allowed;
 }
 
+/* ★ v0.17.0：D&D並べ替え・コマ別ms入力 */
+.anim-frame-cell { cursor: grab; }
+.anim-frame-cell.dragging { opacity: 0.4; outline: 2px dashed #8B5CF6; }
+.anim-frame-ms {
+  width: 100%;
+  margin-top: 2px;
+  padding: 2px 4px;
+  font-size: 10px;
+  text-align: center;
+  border: 1px solid #DDD6FE;
+  border-radius: 4px;
+  color: #6D28D9;
+  background: #FAF5FF;
+}
+.anim-frame-ms::placeholder { color: #C4B5FD; }
+
 /* 自動チェック・警告表示 */
 .anim-warn-ok   { color: #15803d; }
 .anim-warn-bad  { color: #b91c1c; font-weight: 700; }
