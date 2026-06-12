@@ -1153,18 +1153,63 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
       <div class="sticky top-0 bg-white border-b-2 border-purple-200 p-4 flex items-center justify-between rounded-t-2xl z-10">
         <h2 class="text-lg font-bold text-sukipura-navy flex items-center gap-2">
-          🎬 動くスタンプを作る（フレームアニメ式・APNG）
-          <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">v0.14.0</span>
+          🎬 動くスタンプを作る（APNG）
+          <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">かんたん／フレーム</span>
         </h2>
         <button id="animateModalCloseBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none w-8 h-8 flex items-center justify-center">×</button>
       </div>
 
       <div class="p-4 space-y-4">
 
+        <!-- ★ v0.16.0：かんたんモード（1枚から自動生成） -->
+        <div class="p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg border-2 border-pink-300">
+          <p class="font-bold text-sukipura-navy text-sm mb-1">🪄 かんたんモード：1枚の画像から自動で動かす <span class="text-[10px] bg-pink-500 text-white px-2 py-0.5 rounded-full ml-1">NEW v0.16</span></p>
+          <p class="text-xs text-gray-600 mb-2">切り抜き済みのスタンプ画像（透過PNG推奨）を1枚選んで、動きを選ぶだけ。コマは下のフレーム一覧に自動で入ります。</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-2">
+            <div>
+              <span class="text-xs font-bold text-gray-600 block mb-1">動かしたい画像（1枚）</span>
+              <input type="file" id="animPresetFileInput" accept="image/png,image/jpeg" class="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-pink-500 file:text-white file:font-bold file:cursor-pointer hover:file:bg-pink-600">
+              <p id="animPresetSrcInfo" class="text-[11px] text-gray-500 mt-1">未選択</p>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="flex flex-col col-span-3 md:col-span-1">
+                <span class="text-xs font-bold text-gray-600 mb-1">動き</span>
+                <select id="animPresetSelect" class="px-2 py-2 border-2 border-gray-300 rounded-lg text-sm">
+                  <option value="puru" selected>ぷるぷる</option>
+                  <option value="pyoko">ぴょこぴょこ</option>
+                  <option value="fuwa">ふわふわ</option>
+                  <option value="swing">スイング</option>
+                  <option value="pulse">ズーム</option>
+                  <option value="slidein">スライドイン</option>
+                  <option value="blink">点滅</option>
+                </select>
+              </label>
+              <label class="flex flex-col">
+                <span class="text-xs font-bold text-gray-600 mb-1">コマ数</span>
+                <select id="animPresetFrames" class="px-2 py-2 border-2 border-gray-300 rounded-lg text-sm">
+                  <option value="6">6</option>
+                  <option value="8" selected>8</option>
+                  <option value="10">10</option>
+                  <option value="12">12</option>
+                </select>
+              </label>
+              <label class="flex flex-col">
+                <span class="text-xs font-bold text-gray-600 mb-1">動きの強さ</span>
+                <select id="animPresetStrength" class="px-2 py-2 border-2 border-gray-300 rounded-lg text-sm">
+                  <option value="0.6">ひかえめ</option>
+                  <option value="1" selected>標準</option>
+                  <option value="1.6">つよめ</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <button id="animPresetGenerateBtn" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-2.5 rounded-xl transition shadow">🪄 コマを自動生成（→ プレビュー再生）</button>
+        </div>
+
         <!-- ① フレーム画像の読み込み -->
         <div class="p-3 bg-purple-50 rounded-lg border border-purple-200">
-          <p class="font-bold text-sukipura-navy text-sm mb-2">① コマ画像を読み込む（複数可）</p>
-          <p class="text-xs text-gray-600 mb-2">PNG / JPEG を複数選んで読み込むと、下に順番に並びます。透過済みPNGを推奨します。</p>
+          <p class="font-bold text-sukipura-navy text-sm mb-2">① コマ画像を読み込む（複数可・こだわり派向け）</p>
+          <p class="text-xs text-gray-600 mb-2">PNG / JPEG を複数選んで読み込むと、下に順番に並びます。透過済みPNGを推奨します。かんたんモードで生成したコマもここで並べ替え・削除できます。</p>
           <input type="file" id="animateFileInput" accept="image/png,image/jpeg" multiple class="block w-full text-sm text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-purple-500 file:text-white file:font-bold file:cursor-pointer hover:file:bg-purple-600">
           <p id="animateFrameCountInfo" class="text-xs text-gray-600 mt-2">読み込み済み：<strong>0</strong> コマ</p>
         </div>
