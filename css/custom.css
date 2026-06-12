@@ -304,6 +304,43 @@
 }
 .anim-frame-ms::placeholder { color: #C4B5FD; }
 
+/* ★ v0.18.0：💬 実寸トークプレビュー（LINEトーク画面風モック） */
+#animatePreviewWrap.talk-mode {
+  background: #7494C0; /* LINEトークの既定背景に近い青灰 */
+}
+#animatePreviewWrap.talk-mode #animatePreviewCanvas {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  width: 170px !important;   /* トークでのスタンプ実表示サイズの目安 */
+  height: auto !important;
+  align-self: flex-end;
+  margin-right: 12px;
+}
+.talk-bubble-other {
+  align-self: flex-start;
+  background: #fff;
+  border-radius: 16px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #222;
+  margin: 4px 0 10px 8px;
+  max-width: 70%;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+.talk-bubble-me {
+  align-self: flex-end;
+  background: #8DE055; /* LINE自分側バブル色 */
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 11px;
+  color: #1a3409;
+  margin: 8px 8px 0 0;
+  box-shadow: 0 1px 2px rgba(0,0,0,.15);
+}
+#animatePreviewWrap.talk-mode #animatePreviewTitle { color: #fff; }
+#animatePreviewWrap.talk-mode #animateInfoText { color: #e3ecf7; }
+
 /* 自動チェック・警告表示 */
 .anim-warn-ok   { color: #15803d; }
 .anim-warn-bad  { color: #b91c1c; font-weight: 700; }
