@@ -651,16 +651,16 @@
       <div class="mt-4 pt-4 border-t-2 border-dashed border-purple-300">
         <div class="flex flex-wrap items-center gap-3 mb-2">
           <h3 class="font-bold text-sukipura-navy text-base">
-            🎬 動くスタンプを作る（フレームアニメ式）
-            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">v0.14.0 NEW</span>
+            🎬 動くスタンプ・😀 動く絵文字を作る（フレームアニメ式）
+            <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full ml-1">v0.20.0 NEW</span>
           </h3>
         </div>
         <p class="text-xs text-gray-600 mb-3">
           パラパラ漫画の要領で、<strong>複数のコマ画像</strong>を読み込んで順番に再生し、
-          <strong>LINE動くスタンプ（APNG）</strong>として出力します。透過済みPNGの読み込みを推奨。
+          <strong>LINE動くスタンプ／動く絵文字（APNG）</strong>として出力します。透過済みPNGの読み込みを推奨。
         </p>
         <button id="openAnimateModalBtn" class="w-full bg-gradient-to-r from-purple-400 to-indigo-400 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl transition shadow-md">
-          🎬 動くスタンプを作る（APNG出力）
+          🎬 動くスタンプ・😀 動く絵文字を作る（APNG出力）
         </button>
         <p class="text-[11px] text-gray-500 mt-2">💡 5〜20コマのPNG/JPEGを用意してご利用ください（透過済みPNG推奨）</p>
       </div>
@@ -1154,7 +1154,7 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[95vh] overflow-y-auto">
       <div class="sticky top-0 bg-white border-b-2 border-purple-200 p-4 flex items-center justify-between rounded-t-2xl z-10">
         <h2 class="text-lg font-bold text-sukipura-navy flex items-center gap-2">
-          🎬 動くスタンプを作る（APNG）
+          🎬 動くスタンプ・😀 動く絵文字を作る（APNG）
           <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">かんたん／フレーム</span>
         </h2>
         <button id="animateModalCloseBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none w-8 h-8 flex items-center justify-center">×</button>
@@ -1256,6 +1256,7 @@
                 <option value="sticker" selected>📱 スタンプ 320×270</option>
                 <option value="main">🖼 メイン 240×240</option>
                 <option value="tab">🔖 タブ 96×74</option>
+                <option value="emoji">😀 動く絵文字 180×180</option>
               </select>
             </label>
           </div>
@@ -1290,19 +1291,36 @@
           </div>
         </details>
 
+        <!-- ★ v0.20.0：動く絵文字の仕様 -->
+        <details class="text-xs">
+          <summary class="cursor-pointer font-bold text-purple-700">😀 LINE動く絵文字（アニメーション絵文字）仕様の注意点 <span class="text-[9px] bg-purple-100 px-1 rounded">v0.20</span></summary>
+          <div class="mt-2 p-3 bg-purple-50 rounded text-gray-700 space-y-1">
+            <p>📐 <strong>サイズ</strong>：180×180px（正方形・余白なしで画像いっぱいに配置推奨）</p>
+            <p>🎬 <strong>形式</strong>：APNG（拡張子 .png）／ コマ数 5〜20 ／ 1ループ 1〜4秒</p>
+            <p>💾 <strong>容量</strong>：各300KB以下 ／ ZIP全体 20MB以下</p>
+            <p>🔢 <strong>登録個数</strong>：8 / 16 / 24 / 40 個</p>
+            <p>🖼 <strong>メイン画像は不要</strong>（登録した絵文字から自動で4個が選ばれます）／ タブ96×74は必要</p>
+            <p class="text-purple-700">▶ 出力サイズで「😀 動く絵文字 180×180」を選ぶか、下の <strong>「😀 動く絵文字セット出力」</strong> ボタンで申請用ZIP（絵文字APNG＋タブ）を作成できます。</p>
+          </div>
+        </details>
+
         <!-- アクションボタン -->
         <div class="flex flex-wrap gap-2 pt-2 border-t-2 border-gray-200">
           <button id="animateExportBtn" class="flex-1 min-w-[180px] bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold py-3 rounded-xl transition shadow-md">
             📥 APNGを出力（選択サイズ）
           </button>
           <button id="animateExportSetBtn" class="flex-1 min-w-[180px] bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 rounded-xl transition shadow-md">
-            📦 申請セット一括出力（ZIP）<span class="text-[9px] bg-white/25 px-1 rounded ml-1">v0.18</span>
+            📦 スタンプ申請セット（ZIP）<span class="text-[9px] bg-white/25 px-1 rounded ml-1">v0.18</span>
+          </button>
+          <button id="animateExportEmojiSetBtn" class="flex-1 min-w-[180px] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 rounded-xl transition shadow-md">
+            😀 動く絵文字セット（ZIP）<span class="text-[9px] bg-white/25 px-1 rounded ml-1">v0.20</span>
           </button>
           <button id="animateCancelBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-6 py-3 rounded-xl transition">
             閉じる
           </button>
         </div>
-        <p class="text-[10px] text-gray-500">📦 申請セット＝スタンプAPNG(320×270)＋メインAPNG(240×240)＋タブ静止PNG(96×74)＋README。各APNGは300KB自動最適化込み。※LINE申請にはスタンプ画像が8/16/24個必要です（このセットは1個分＋共通画像）</p>
+        <p class="text-[10px] text-gray-500">📦 スタンプ申請セット＝スタンプAPNG(320×270)＋メインAPNG(240×240)＋タブ静止PNG(96×74)＋README。※申請にはスタンプ画像が8/16/24個必要（このセットは1個分＋共通画像）</p>
+        <p class="text-[10px] text-purple-600">😀 動く絵文字セット＝絵文字APNG(180×180)＋タブ静止PNG(96×74)＋README。各300KB自動最適化込み。※申請には8/16/24/40個必要・メイン画像は不要（4個自動選出）</p>
 
       </div>
     </div>
