@@ -48,8 +48,9 @@
           </p>
         </div>
       </div>
-      <div class="text-xs text-gray-500 mt-2 md:mt-0">
-        by <a href="https://twitter.com/leama_55555" target="_blank" rel="noopener" class="text-sukipura-green hover:underline">@leama_55555</a>
+      <div class="flex items-center gap-2 mt-2 md:mt-0">
+        <button id="openManualBtn" class="bg-sukipura-green hover:bg-green-600 text-white text-xs font-bold px-3 py-2 rounded-full shadow-sm transition">📖 使い方マニュアル</button>
+        <span class="text-xs text-gray-500">by <a href="https://twitter.com/leama_55555" target="_blank" rel="noopener" class="text-sukipura-green hover:underline">@leama_55555</a></span>
       </div>
     </div>
   </header>
@@ -1304,6 +1305,20 @@
         <p class="text-[10px] text-gray-500">📦 申請セット＝スタンプAPNG(320×270)＋メインAPNG(240×240)＋タブ静止PNG(96×74)＋README。各APNGは300KB自動最適化込み。※LINE申請にはスタンプ画像が8/16/24個必要です（このセットは1個分＋共通画像）</p>
 
       </div>
+    </div>
+  </div>
+
+  <!-- ★ v0.19.0：使い方マニュアル モーダル -->
+  <div id="manualModal" class="fixed inset-0 bg-black/70 z-50 hidden flex items-center justify-center p-2 md:p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[95vh] overflow-y-auto">
+      <div class="sticky top-0 bg-white border-b-2 border-sukipura-green p-4 flex items-center justify-between rounded-t-2xl z-10">
+        <h2 class="text-lg font-bold text-sukipura-navy">📖 はじめての方へ：使い方マニュアル</h2>
+        <div class="flex items-center gap-2">
+          <button id="manualPdfBtn" class="bg-sukipura-navy hover:bg-blue-900 text-white text-xs font-bold px-3 py-2 rounded-lg transition">🖨 PDFで保存</button>
+          <button id="manualCloseBtn" class="text-gray-500 hover:text-gray-700 text-2xl leading-none w-8 h-8 flex items-center justify-center">×</button>
+        </div>
+      </div>
+      <div id="manualBody" class="p-5 text-sm leading-relaxed text-gray-700"></div>
     </div>
   </div>
 
